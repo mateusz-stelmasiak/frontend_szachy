@@ -1,0 +1,318 @@
+/*------------------------------------------------------------------
+[Mainpage Stylesheet]
+
+Project:    Praca Inżynierska
+Version:    1.2
+Last change:    14/04/2021 
+Assigned to:   Mateusz Stelmasiak (ms)
+-------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------
+[Layout]
+
+[#. SectioName /.DOMElement]
+1. Fonts and Imports
+2. Colors
+3. Body /body
+    3.1 Navbar /header
+        3.1.1 Menu widget
+        3.1.2 Buttons
+        3.1.3 User Profile
+        3.1.4 Sidenav
+        3.1.5 Responsiveness (media queries)
+    3.2 CallToAction /section
+    3.3 Login Section /section
+    3.4 Register Section /section
+-------------------------------------------------------------------*//*TABLE OF CONTENTS*/
+
+
+/*---------------------
+[1. Fonts and Imports]
+----------------------*/
+/*--[1.1 Fonts]--*/
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+/*--[1.2 Icons]--*/
+/*from css.gg, Open-source CSS, SVG and Figma UI Icons*/
+@import url('https://css.gg/games.css');
+
+
+/*---------------------
+[2.Colors]
+Color definitions, to be used with by var reference 
+ex. "color: var (--some-color);"
+---------------------*/
+:root{
+    --body-color:#282828;
+    
+    --gradient--primary-color: #69aca2;
+    --gradient--secondary-color:#468f84;
+    --text-color:#fafbfa;
+    --accent-color:#da8b43;
+    --accent-secondary-color:#bf6616;
+    --chessboard--black:#8ca2ad;
+    --chessboard--white:#dee3e6;
+
+    --navbar-text:#dee3e6;
+}
+
+
+
+/*----------------------
+[3. Body]
+----------------------*/
+body{
+  font-family: 'Montserrat';
+  margin: 0 0;
+  background-color: var(--body-color);
+  max-width: 2800px;
+  min-width: 330px;
+}
+
+
+/*-----------
+[3.1 Navbar]
+-----------*/
+.navbar{
+    background: linear-gradient(45deg,var(--gradient--primary-color) 15%, var(--gradient--secondary-color) 100%);
+    padding: 0rem 0rem 0.5rem 0rem;
+  
+    width: 100vw;
+    background-color: var(--navbar-background);
+
+    display: grid;
+    grid-template-columns: 1.5fr 0.5fr;
+    grid-template-rows: 5rem 4rem;
+    gap: 0px 0px;
+    grid-template-areas:
+      "NavProfile NavMenu"
+      "NavProfile NavButtons";
+  }
+/* attach GRID AREAS to css classes */
+.NavProfile { grid-area: NavProfile; }
+.NavMenu { grid-area: NavMenu; }
+.NavButtons { grid-area: NavButtons; }
+
+/*
+[3.1.1 Navbar Menu widget]
+The three bars that open navigation on mobile devices
+*/
+.navbar-navMenu{
+    display: none;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-direction: column;
+    flex-wrap: wrap;
+    z-index: 0;
+    margin-right: 5rem;
+  }
+
+.navbar-navMenu-icon-part{
+    width:3rem;
+    height:0.3rem;
+    margin-bottom: 0.5rem;
+    background-color:var(--navbar-text);
+
+    opacity:0.8;
+  }
+
+/*
+[3.1.2 Navbar Buttons]
+Buttons that route between different secitons of the mainpage on desktop
+*/
+.navbar-buttons{
+    margin-right: 5rem;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+  }
+
+.navbar button{
+    all:unset;  /*deletes all default button styling*/
+    cursor: pointer;
+  
+    display: block;
+    color:#dadada;
+    font-size: 1.5em;
+    margin-left: 1rem;
+    transition:200ms;
+  }
+  
+.navbar button:before,.navbar button::after{
+    content: "|";
+  }
+  
+.navbar button:hover{
+    font-weight: 300;
+    transform: scale(1.1,1.1);
+    color: white;
+  }
+/* Class to be used by the router to highlight currently selected button*/
+.navbar-selected{
+  font-weight: 300;
+  transform: scale(1.1,1.1);
+  color: white;
+  }
+  
+/*
+[3.1.3 Navbar User Profile]
+User profile widget with username and profile pic
+*/
+.navbar-userProfile{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 4rem;
+  }
+.navbar-userProfile .img{
+    position: relative;
+    width:6em;
+    height:6em;
+    border-radius: 100%;
+    background-color: #e48939;;
+    margin-right: 2rem;
+  }
+
+.navbar-userProfile-info{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+  
+.navbar-userProfile h1{
+    font-size:3em;
+    margin: 0 0;
+    color: var(--navbar-text);
+    font-weight: normal;
+  }
+/* Display username */
+.navbar-userProfile h3{
+    margin: 0 0;
+    color: #191919;
+    flex-basis: 100%;
+    font-size:1em;
+    font-weight: normal;
+    font-style: italic;
+  }
+  
+/*
+[3.1.4 Navbar Sidenav]
+Sidenav for mobile devices
+*/
+
+.sidenav {
+  height: 100%; 
+  width: 0; 
+  position: fixed; 
+  z-index: 1; 
+  top: 0; 
+  right: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; 
+  transition: 0.5s; 
+}
+.sidenav button{
+  padding: 8px 8px 8px 32px;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+.sidenav .closebtn:hover {
+  color: #f1f1f1;
+}
+
+
+/*
+[3.1.5 Navbar Responsiveness]
+Media queries to make the navbar layout responsive
+*/
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav button {font-size: 18px;}
+} 
+
+@media only screen and (max-width: 1100px) {
+  /* HIDE TEXT BUTTONS */
+  .NavButtons{
+    display: none;
+  }
+  /* READJUST THE PADDING*/
+  .navbar{
+    padding: 0rem 2rem 0rem 0rem;
+  }
+
+  .NavMenu{
+    display: flex;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  /* HIDE USER PROFILE */
+  .navbar-userProfile{
+    font-size: 0.7rem;
+  }
+
+}
+
+
+
+
+.callToAction{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  padding: 15rem 2rem;
+
+}
+.callToAction .img{
+  width: 200px;
+  height: auto;
+  margin-right: 5rem;
+}
+
+#c2{
+  position: relative;
+  left:5rem;
+  top:1rem;
+}
+.callToAction button{
+  all:unset;
+  cursor: pointer;
+
+  padding: 1rem 15rem;
+  border-radius: 10000vw;
+  font-size:3rem;
+  font-weight: 0;
+  color: #1c534b;
+  background-color: whitesmoke;
+  transition: 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.callToAction button:hover{
+  transform: scale(1.1);
+}
