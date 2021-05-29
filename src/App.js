@@ -15,7 +15,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 )
 
 
-
 function App() {
   return (
           <div className="App">

@@ -1,6 +1,6 @@
 const API = {
-    IP: '192.168.1.6',
-    PORT: '33334',
+    IP: '127.0.0.1',
+    PORT: '5009',
 }
 
 //no backtick at the end
@@ -10,8 +10,11 @@ export function createAPIRequestOptions(method,payload){
     return {
         method: method,
         mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin' : '*',
+            'Access-Control-Allow-Headers' : '*'},
         body: JSON.stringify(payload)
     };
-
 }
+
+

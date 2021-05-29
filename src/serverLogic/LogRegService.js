@@ -13,17 +13,36 @@ export  function login(username,password){
         body: JSON.stringify({ username, hashedPassword })
     };
 
-    let sessionToken=hashedPassword;
-    let playerId=1;
-    localStorage.setItem('user', JSON.stringify({username,sessionToken,playerId}));
+    fetch(API_URL+'/login', {
+        mode:'cors',
+        // Declare what type of data we're sending
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        // Specify the method
+        method: 'POST',
+
+        // A JSON payload
+        body: JSON.stringify(
+            { username, hashedPassword }
+        )
+    }).then(function (response) { // At this point, Flask has printed our JSON
+        return response.text();
+    }).then(function (text) {
+        console.log('POST response: ');
+        // Should be 'OK' if everything was successful
+        console.log(text);
+    });
+
     return true;
-    /*return fetch(`${API_URL}/users/login`, requestOptions)
-        .then(handleResponse)
-        .then(user => {
-            localStorage.setItem('user', JSON.stringify(user));
-            return user;
-        });
-  */
+    // return fetch(API_URL+'/login', requestOptions)
+    //     .then(handleResponse)
+    //     .then(user => {
+    //         console.log(user);
+    //         localStorage.setItem('user', JSON.stringify(user));
+    //         return true;
+    //     });
 }
 
 
@@ -69,3 +88,4 @@ function handleResponse(response) {
         return data;
     });
 }
+
