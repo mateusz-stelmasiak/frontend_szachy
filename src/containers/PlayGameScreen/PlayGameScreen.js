@@ -2,6 +2,10 @@ import {Component} from "react";
 import GameContainer from "./Components/GameContainer"
 import Chat from "./Components/Chat"
 import "./PlayGameScreen.css"
+import "./Game/Test"
+import sketch from "./Game/Test";
+import P5Wrapper from "react-p5-wrapper"
+import SocketIOClient from "../CommonComponents/SocketIOClient"
 
 
 class PlayGameScreen extends Component{
@@ -20,7 +24,10 @@ class PlayGameScreen extends Component{
         return (
             <div className="PlayGameScreen">
                 <Chat/>
-                <GameContainer/>
+
+                <GameContainer>
+                    <P5Wrapper sketch={sketch} />
+                </GameContainer>
             </div>
         );
     }

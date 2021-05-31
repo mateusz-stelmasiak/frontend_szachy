@@ -1,91 +1,89 @@
 import {sha256} from "js-sha256";
 import React from "react";
 import {API_URL} from "./APIConfig";
+import {handleResponse, fetchWithTimeout, FETCH_DEBUGGING_MODE, authHeader} from "./DataFetcher"
 
+export async function login(username,password){
 
-//retruns error message if failed,
-//and true if successfull
-export  function login(username,password){
-    let hashedPassword=sha256(password);
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, hashedPassword })
-    };
+    try {
+        let hashedPassword=sha256(password);
+        const requestOptions = {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, hashedPassword })
+        };
 
-    fetch(API_URL+'/login', {
-        mode:'cors',
-        // Declare what type of data we're sending
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        const response = await fetchWithTimeout(API_URL + '/login', requestOptions);
+        const respObj = await handleResponse(response);
 
-        // Specify the method
-        method: 'POST',
+        //save user data locally for later authentication
+        localStorage.setItem('username', respObj.username);
+        localStorage.setItem('userId', respObj.userId);
+        localStorage.setItem('sessionToken', respObj.sessionID);
 
-        // A JSON payload
-        body: JSON.stringify(
-            { username, hashedPassword }
-        )
-    }).then(function (response) { // At this point, Flask has printed our JSON
-        return response.text();
-    }).then(function (text) {
-        console.log('POST response: ');
-        // Should be 'OK' if everything was successful
-        console.log(text);
-    });
-
-    return true;
-    // return fetch(API_URL+'/login', requestOptions)
-    //     .then(handleResponse)
-    //     .then(user => {
-    //         console.log(user);
-    //         localStorage.setItem('user', JSON.stringify(user));
-    //         return true;
-    //     });
-}
-
-
-export function register(username,password){
-    let hashedPassword=sha256(password);
-
-    const requestOptions = {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({username,hashedPassword})
-    };
-
-    return fetch(`${API_URL}/users/register`, requestOptions).then(handleResponse);
-}
-
-export function logout(){
-    localStorage.removeItem('user');
-    window.location.reload(true); //reload to rerout to loginpage
-}
-
-//returns an HTTP Authorization header containing the Json Web Token (JWT) of the currently logged in user
-export function authHeader() {
-    // return authorization header with jwt token
-    let user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.token) {
-        return { 'Authorization': 'Bearer ' + user.token };
-    } else {
-        return {};
+        if (FETCH_DEBUGGING_MODE)  console.log(respObj);
+        return respObj;
+    } catch (error) {
+        console.log(error.name === 'AbortError');
+        return {error: 'Network connection error'};
     }
 }
 
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                logout(); // auto logout if 401 response returned from api
-            }
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-        return data;
-    });
+export async function register(username,password){
+    try {
+        let hashedPassword=sha256(password);
+        const requestOptions = {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({username,hashedPassword})
+        };
+
+        const response = await fetchWithTimeout(API_URL + '/register', requestOptions);
+        const respObj = await handleResponse(response);
+        if (FETCH_DEBUGGING_MODE)  console.log(respObj);
+        return respObj;
+    } catch (error) {
+        console.log(error.name === 'AbortError');
+        return {error: 'Network connection error'};
+    }
 }
+
+export async function logout(){
+    //handle player not having been logedin in the first place
+    if(!localStorage.getItem('sessionToken') ){
+        window.location.reload(true); //reload to reroute to loginpage
+        return;
+    }
+    let userId=localStorage.getItem('userId');
+
+    try {
+        const requestOptions = {
+            method: 'POST',
+            mode: 'cors',
+            headers: authHeader(),
+            body: JSON.stringify({userId})
+        };
+
+        const response = await fetchWithTimeout(API_URL + '/logout', requestOptions);
+        const respObj = await handleResponse(response);
+        if (FETCH_DEBUGGING_MODE)  console.log(respObj);
+
+    } catch (error) {
+        console.log(error.name === 'AbortError');
+        //remove userInfo from local storage
+    }
+    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+
+    window.location.reload(true); //reload to reroute to loginpage
+    return;
+
+}
+
+
+
+
 

@@ -129,7 +129,7 @@ export default function RegisterForm() {
         setIsValidUsername(!usernameContainsWhitespace && isUsernameLongEnough)
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         //check if all data matches requirments
@@ -141,16 +141,18 @@ export default function RegisterForm() {
         }
 
         //if all data is correct, try to register user
-        let error=register(username,password);
-        if(error!==true){
-            setErrorMessage(error);
+        let resp=await register(username,password)
+        if(resp===undefined) return;
+        if (resp.error !== undefined){
+            setErrorMessage(resp.error);
             return;
         }
 
         //registration complete, autologin user
-        error=login(username,password);
-        if (error!==true){
-            setErrorMessage(error);
+        resp=await login(username,password)
+        if(resp===undefined) return;
+        if (resp.error !== undefined){
+            setErrorMessage(resp.error);
             return;
         }
         routeToNext();

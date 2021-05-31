@@ -11,6 +11,7 @@ export default class GameContainer extends TCPMessagingComponent{
         return (
             <section className="GameContainer">
                 <button onClick={()=>this.sendMessage("HALO 123")}/>
+                {this.props.children}
             </section>
         );
     }

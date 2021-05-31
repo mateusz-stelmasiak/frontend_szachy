@@ -70,8 +70,8 @@ class NavBar extends Component {
 
                 this.logoVisible=false;
                 this.playerWidgetVisible=true;
-                let userData= JSON.parse(localStorage.getItem('user'));
-                if (userData!==null) this.playerUsername=userData.username;
+                let userData= localStorage.getItem('username');
+                if (userData!==null) this.playerUsername=userData;
             }
         }
 

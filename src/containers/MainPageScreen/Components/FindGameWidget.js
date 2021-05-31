@@ -8,10 +8,12 @@ import WebSocketClient from "../../../serverLogic/WebSocket";
 import async from "async";
 import {MatchmakingManager} from "../../../serverLogic/MatchmakingManager";
 import {useHistory} from "react-router-dom";
+import socketIOClient from "socket.io-client";
+import SocketClient from "../../../serverLogic/WebSocket"
 
 
 export default function FindGameWidget() {
-    const playerId= JSON.parse(localStorage.getItem('user')).playerId;
+    const playerId= localStorage.getItem('userId');
     const matchMakingManager =new MatchmakingManager();
     const [playersInQ,setPlayersInQ] = useState("loading...");
     const buttonTexts = ["FIND A GAME!", "IN QUEUE"];
@@ -25,6 +27,11 @@ export default function FindGameWidget() {
     //routing after having succesfully found a game
     const history = useHistory();
     const routeToNext = () => history.push('/play?id='+{gameId});
+
+    //socketIO Client
+    let socket;
+    const [socketConnected,setSocketConnected]= useState(false);
+
 
     const idleStyle = {
         background: 'linear-gradient(90deg, rgba(200,199,199,1) 30%, rgba(254,254,254,1) 100%)',
@@ -44,19 +51,34 @@ export default function FindGameWidget() {
         setButtonText(buttonTexts[isInQ ? 0:1]);
         //restart the timer
         timerRestart();
-        isInQ ? joinQ():leaveQ();
+        !isInQ ? joinQ():leaveQ();
+    }
+
+
+    async function setupSocket(){
+        socket = new SocketClient();
+        await socket.connect();
+        await setSocketConnected(socket.is_connected);
+
+        socket.on("queue_info", data => {
+            console.log("queue_data" + data);
+            setPlayersInQ(data.playersInQueue);
+        });
     }
 
     async function joinQ(){
-        let playersInQtemp=matchMakingManager.getQueueInfo();
-        if(typeof playersInQtemp ==='number') setPlayersInQ(playersInQtemp);
+        //check for socket connection, if none exists, connect
+        if(!socketConnected){
+            await setupSocket();
+        }
 
-        const gameId= await matchMakingManager.findMatch();
-        setGameId(gameId);
+        await socket.emit("join_queue",playerId);
     }
 
-    function leaveQ(){
-        matchMakingManager.setPlayerInQ(false);
+    async function leaveQ(){
+        if(!socketConnected) return;
+
+        await socket.emit("leave_queue",playerId);
     }
 
     //called when props are updated

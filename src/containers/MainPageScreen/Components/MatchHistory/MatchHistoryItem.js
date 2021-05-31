@@ -16,6 +16,7 @@ export class MatchResult {
     static draw = new MatchResult('Draw', '#468f84');
     static win = new MatchResult('Win', '#369257');
     static loss = new MatchResult('Loss', '#bf3d3b');
+    static none = new MatchResult('None','#69aca2')
 
     constructor(name, color) {
         this.name = name;
@@ -27,7 +28,7 @@ export class MatchResult {
             case 'draw': return MatchResult.draw;
             case 'win': return MatchResult.win;
             case 'loss': return MatchResult.loss;
-            default: return new MatchResult("unknown","#ff00cd")
+            default: return MatchResult.none;
         }
     }
 
@@ -46,7 +47,6 @@ export class MatchDate {
         this.hour = hour;
         this.dayMonthYear = dayMonthYear;
     }
-
 }
 
 class MatchHistoryItem extends Component {

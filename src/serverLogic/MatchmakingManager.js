@@ -1,15 +1,13 @@
 //Matchmaking manager
 import WebSocketClient from "./WebSocket";
 import {API_URL} from "./APIConfig"
+import {socket} from './WebSocket'
 
 
 export class MatchmakingManager{
-    //TO-DO wpisac route
-    queueInfoRoute="/q";
 
     constructor(playerID) {
         this.playerID=playerID;
-        this.wSocket=new WebSocketClient();
         this.playerInQ=false;
     }
 
@@ -36,7 +34,7 @@ export class MatchmakingManager{
     async findMatch()
     {
         //send playerID
-
+        //socket.on()
         //await for response
         while(this.playerInQ){
             //return response if found

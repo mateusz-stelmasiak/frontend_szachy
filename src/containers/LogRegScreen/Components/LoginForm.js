@@ -27,11 +27,12 @@ export default function LoginForm() {
         logout();
     }
 
-    function HandleSubmit(event) {
+    async function HandleSubmit(event) {
         event.preventDefault();
-        let error=login(username,password);
-        if (error!==true){
-            setErrorMessage(error);
+        let resp=await login(username,password)
+
+        if (resp.error !== undefined){
+            setErrorMessage(resp.error);
             return;
         }
         routeToNext();
