@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./FindGameWidget.css"
 import TextWithWavyOrnament from "../../CommonComponents/TextWithWavyOrnament";
 import {formatTime} from "../../../serverLogic/Utils"
@@ -10,9 +10,13 @@ import {MatchmakingManager} from "../../../serverLogic/MatchmakingManager";
 import {useHistory} from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import SocketClient from "../../../serverLogic/WebSocket"
+import {SocketContext} from "../../../context/socketContext";
 
 
 export default function FindGameWidget() {
+
+
+
     const playerId= localStorage.getItem('userId');
     const matchMakingManager =new MatchmakingManager();
     const [playersInQ,setPlayersInQ] = useState("loading...");
@@ -29,7 +33,7 @@ export default function FindGameWidget() {
     const routeToNext = () => history.push('/play?id='+{gameId});
 
     //socketIO Client
-    let socket;
+    let socket = useContext(SocketContext);
     const [socketConnected,setSocketConnected]= useState(false);
 
 
@@ -56,7 +60,6 @@ export default function FindGameWidget() {
 
 
     async function setupSocket(){
-        socket = new SocketClient();
         await socket.connect();
         await setSocketConnected(socket.is_connected);
 
@@ -77,7 +80,6 @@ export default function FindGameWidget() {
 
     async function leaveQ(){
         if(!socketConnected) return;
-
         await socket.emit("leave_queue",playerId);
     }
 

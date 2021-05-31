@@ -8,6 +8,9 @@ export default class SocketClient {
     socket;
     is_connected=false;
 
+    constructor() {
+    }
+
     is_connected(){
         return this.is_connected;
     }

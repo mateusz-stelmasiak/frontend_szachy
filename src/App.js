@@ -5,13 +5,10 @@ import PlayGameScreen from "./containers/PlayGameScreen/PlayGameScreen";
 import NavBar from "./containers/Navigation/NavBar";
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import configureStore from "./redux/store";
-import "./serverLogic/WebSocket"
-import SocketClient from "./serverLogic/WebSocket";
+import {SocketContext, socket} from './context/socketContext';
 
 
 //socket client saved in redux store for use in all app components
-const socketClient = new SocketClient();
-const store = configureStore(socketClient);
 localStorage.debug = 'none'; //turns on socket data logging into console
 
 
@@ -27,6 +24,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 function App() {
   return (
+      <SocketContext.Provider value={socket}>
           <div className="App">
                   <Router>
                       <Route path="/" component={NavBar}/>
@@ -38,6 +36,7 @@ function App() {
                       </Switch>
                   </Router>
           </div>
+      </SocketContext.Provider>
   );
 }
 
